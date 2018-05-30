@@ -31,6 +31,7 @@
 - (NSData*)processImage:(UIImage*)image options:(SCPictureOptions*)options
 {
     NSData* data = nil;
+    BOOL saveToPhotoAlbum = options.saveToPhotoAlbum;
 
     if ((options.targetSize.width > 0) && (options.targetSize.height > 0)) {
         image = [image imageByScalingNotCroppingForSize:options.targetSize];
@@ -46,6 +47,12 @@
         } else {
             data = UIImageJPEGRepresentation(image, [options.quality floatValue] / 100.0f);
         }
+    }
+
+    if (saveToPhotoAlbum) {
+        // write image to photo album
+        // will ask for permission once, user can change this permission value in settings
+        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
     }
 
     return data;
@@ -156,6 +163,7 @@
     }
 
     pictureOptions.encodingType = [command argumentAtIndex:3 withDefault:@"jpeg"];
+    pictureOptions.saveToPhotoAlbum = [[command argumentAtIndex:4 withDefault:@(NO)] boolValue];
 
     return pictureOptions;
 }

@@ -13,6 +13,7 @@
 @property (strong, nonatomic) NSNumber* quality;
 @property (assign) CGSize targetSize;
 @property (strong, nonatomic) NSString* encodingType;
+@property (assign, nonatomic) BOOL saveToPhotoAlbum;
 
 + (instancetype) createFromTakePictureArguments:(CDVInvokedUrlCommand*)command;
 
