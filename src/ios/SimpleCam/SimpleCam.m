@@ -220,7 +220,7 @@ static CGFloat optionUnavailableAlpha = 0.2;
     _capturedImageV.frame = _imageStreamV.frame; // just to even it out
     _capturedImageV.backgroundColor = [UIColor clearColor];
     _capturedImageV.userInteractionEnabled = YES;
-    _capturedImageV.contentMode = UIViewContentModeScaleAspectFit;
+    _capturedImageV.contentMode = UIViewContentModeScaleAspectFill;
     [self.view insertSubview:_capturedImageV aboveSubview:_imageStreamV];
     
     // for focus
@@ -236,7 +236,9 @@ static CGFloat optionUnavailableAlpha = 0.2;
     
     // SETTING UP CAM
     if (_mySesh == nil) _mySesh = [[AVCaptureSession alloc] init];
+    _mySesh.sessionPreset = AVCaptureSessionPresetPhoto;
 
+    /*
     if([_mySesh canSetSessionPreset:AVCaptureSessionPreset1280x720]){
         _mySesh.sessionPreset = AVCaptureSessionPreset1280x720;
     } else if([_mySesh canSetSessionPreset:AVCaptureSessionPreset640x480]){
@@ -246,10 +248,11 @@ static CGFloat optionUnavailableAlpha = 0.2;
     } else if([_mySesh canSetSessionPreset:AVCaptureSessionPresetLow]){
         _mySesh.sessionPreset = AVCaptureSessionPresetLow;
     }
+    */
 
     
     _captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_mySesh];
-    _captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    _captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     _captureVideoPreviewLayer.frame = _imageStreamV.layer.bounds; // parent of layer
 
     [_imageStreamV.layer addSublayer:_captureVideoPreviewLayer];
@@ -747,19 +750,19 @@ static CGFloat optionUnavailableAlpha = 0.2;
 - (void) resizeImage {
     
     // Set Orientation
-//    BOOL isLandscape = UIInterfaceOrientationIsLandscape(self.interfaceOrientation) ? YES : NO;
+    BOOL isLandscape = UIInterfaceOrientationIsLandscape(self.interfaceOrientation) ? YES : NO;
     
     // Set Size
-//    CGSize size = (isLandscape) ? CGSizeMake(screenHeight, screenWidth) : CGSizeMake(screenWidth, screenHeight);
+    CGSize size = (isLandscape) ? CGSizeMake(screenHeight, screenWidth) : CGSizeMake(screenWidth, screenHeight);
     
     // Set Draw Rect
-//    CGRect drawRect = [self calculateBoundsForSource:_capturedImageV.image.size withTarget:size];
+    CGRect drawRect = [self calculateBoundsForSource:_capturedImageV.image.size withTarget:size];
     
     // START CONTEXT
-        //    UIGraphicsBeginImageContextWithOptions(size, YES, 2.0);
-        //    [_capturedImageV.image drawInRect:drawRect];
-        //    _capturedImageV.image = UIGraphicsGetImageFromCurrentImageContext();
-        //    UIGraphicsEndImageContext();
+            UIGraphicsBeginImageContextWithOptions(size, YES, 2.0);
+            [_capturedImageV.image drawInRect:drawRect];
+            _capturedImageV.image = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
     // END CONTEXT
     
     // See if someone's waiting for resized image
